@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = valenceclient
+
+[report]
+ignore_errors = True
