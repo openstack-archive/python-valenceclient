@@ -1,0 +1,9 @@
+Code-Review+2: Lin Yang <lin.a.yang@intel.com>
+Code-Review+2: Ananth Narayan S <ananth.narayan@gmail.com>
+Workflow+1: Ananth Narayan S <ananth.narayan@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 21 Feb 2017 03:06:47 +0000
+Reviewed-on: https://review.openstack.org/432141
+Project: openstack/python-valenceclient
+Branch: refs/heads/master
