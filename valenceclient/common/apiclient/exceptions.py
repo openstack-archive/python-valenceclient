@@ -1,4 +1,4 @@
-# Copyright 2016 99cloud, Inc.
+# Copyright 2017 99cloud, Inc.
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -65,6 +65,16 @@ class HTTPClientError(HttpError):
     message = _("HTTP Client Error")
 
 
+class BadRequest(HTTPClientError):
+    """HTTP 400 - Bad Request.
+
+    The request cannot be fulfilled due to bad syntax.
+    """
+
+    http_status = http_client.BAD_REQUEST
+    message = _("Bad Request")
+
+
 class HttpServerError(HttpError):
     """Server-side HTTP error.
 
@@ -95,7 +105,7 @@ def from_response(response, method, url):
     if not req_id:
         req_id = response.headers.get('X-compute-request-id')
 
-    kwages = {
+    kwargs = {
         'http_status': response.status_code,
         'response': response,
         'method': method,
@@ -104,7 +114,7 @@ def from_response(response, method, url):
     }
 
     if 'retry_after' in response.headers:
-        kwages['retry_after'] = response.headers['retry_after']
+        kwargs['retry_after'] = response.headers['retry_after']
 
     content_type = response.headers.get('Content-Type', "")
     if content_type.startswith('application/json'):
@@ -116,12 +126,12 @@ def from_response(response, method, url):
             if isinstance(body, dict):
                 error = body.get(list(body)[0])
                 if isinstance(error, dict):
-                    kwages['message'] = (error.get('message') or
+                    kwargs['message'] = (error.get('message') or
                                          error.get('faultstring'))
-                    kwages['details'] = (error.get('details') or
+                    kwargs['details'] = (error.get('details') or
                                          six.text_type(body))
     elif content_type.startswith("text/"):
-        kwages['details'] = getattr(response, 'text', '')
+        kwargs['details'] = getattr(response, 'text', '')
 
     try:
         cls = _code_map[response.status_code]
@@ -136,4 +146,4 @@ def from_response(response, method, url):
         else:
             cls = HttpError
 
-    return cls
+    return cls(**kwargs)
