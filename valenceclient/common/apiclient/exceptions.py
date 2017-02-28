@@ -1,4 +1,4 @@
-# Copyright 2016 99cloud, Inc.
+# Copyright 2017 99cloud, Inc.
 # All Rights Reserved.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -63,6 +63,16 @@ class HTTPClientError(HttpError):
     """
 
     message = _("HTTP Client Error")
+
+
+class BadRequest(HTTPClientError):
+    """HTTP 400 - Bad Request.
+
+    The request cannot be fulfilled due to bad syntax.
+    """
+
+    http_status = http_client.BAD_REQUEST
+    message = _("Bad Request")
 
 
 class HttpServerError(HttpError):
