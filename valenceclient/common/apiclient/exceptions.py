@@ -32,6 +32,11 @@ class ClientException(Exception):
     message = _("ClientException")
 
 
+class ValidationError(ClientException):
+    """Error in validation on API client side."""
+    pass
+
+
 class HttpError(ClientException):
     """The base exception class of all HTTP exceptions"""
 
@@ -83,6 +88,16 @@ class HttpServerError(HttpError):
     """
 
     message = _("HTTP Server Error")
+
+
+class InternalServerError(HttpServerError):
+    """HTTP 500 - Internal Server Error.
+
+    A generic error message, given when no more specific message is suitable.
+    """
+
+    http_status = http_client.INTERNAL_SERVER_ERROR
+    message = _("Internal Server Error")
 
 
 # _code_map cotains all the classes that have http_status attribute
