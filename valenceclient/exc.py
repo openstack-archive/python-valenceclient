@@ -14,7 +14,15 @@
 #    under the License.
 
 from valenceclient.common.apiclient import exceptions
+from valenceclient.common.apiclient.exceptions import BadRequest
 from valenceclient.common.apiclient.exceptions import ClientException
+from valenceclient.common.apiclient.exceptions import InternalServerError
+from valenceclient.common.apiclient.exceptions import ValidationError
+
+ClientException
+InternalServerError
+BadRequest
+ValidationError
 
 
 class InvalidValenceUrl(ClientException):
