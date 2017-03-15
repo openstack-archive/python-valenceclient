@@ -1,0 +1,9 @@
+Code-Review+2: Nate Potter <nathaniel.potter@intel.com>
+Code-Review+2: Lin Yang <lin.a.yang@intel.com>
+Workflow+1: Lin Yang <lin.a.yang@intel.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 15 Mar 2017 00:46:08 +0000
+Reviewed-on: https://review.openstack.org/438843
+Project: openstack/python-valenceclient
+Branch: refs/heads/master
