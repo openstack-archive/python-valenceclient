@@ -16,8 +16,8 @@
 
 import mock
 from oslo_serialization import jsonutils
-
 from six.moves import http_client
+
 from valenceclient.common import http
 from valenceclient import exc
 from valenceclient.tests.unit import utils

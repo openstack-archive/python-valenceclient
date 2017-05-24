@@ -19,7 +19,9 @@ Base utilities to build API operation managers and objects on top of
 
 import abc
 import copy
+
 import six
+
 from valenceclient.common.apiclient import base
 from valenceclient import exc
 
