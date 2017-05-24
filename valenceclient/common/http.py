@@ -17,13 +17,12 @@
 import copy
 import functools
 import logging
-import requests
 import time
 
+import requests
 import six
 from six.moves import http_client
 import six.moves.urllib.parse as urlparse
-
 
 from oslo_serialization import jsonutils
 from oslo_utils import strutils
