@@ -13,11 +13,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import mock
 
 from valenceclient import client
 from valenceclient import exc
-from valenceclient.common.http import DEFAULT_VERSION
 from valenceclient.tests.unit import utils
 
 
@@ -25,7 +23,8 @@ class GetClientTest(utils.BaseTestCase):
 
     def test_get_client_without_valence_url(self):
         valence_url = None
-        self.assertRaises(exc.InvalidValenceUrl, client.get_client, valence_url)
+        self.assertRaises(exc.InvalidValenceUrl,
+                          client.get_client, valence_url)
 
     def test_get_client_with_valence_url(self):
         pass
