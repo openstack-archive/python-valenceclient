@@ -14,18 +14,12 @@
 #    under the License.
 
 
-from valenceclient import client
-from valenceclient import exc
-from valenceclient.common.http import DEFAULT_VERSION
-from valenceclient.tests.unit import utils
+from valenceclient.common import http
+from valenceclient.v1 import node
 
 
-class GetClientTest(utils.BaseTestCase):
+class Client(object):
 
-    def test_get_client_without_valence_url(self):
-        valence_url = None
-        self.assertRaises(exc.InvalidValenceUrl,
-                          client.get_client, valence_url)
-
-    def test_get_client_with_valence_url(self):
-        pass
+    def __init__(self, **kwargs):
+        self.http_client = http.HTTPClient(**kwargs)
+        self.node = node.NodeManager(self.http_client)
