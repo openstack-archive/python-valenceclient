@@ -1,0 +1,115 @@
+{
+    "@odata.context": "/redfish/v1/$metadata#Nodes/Members/$entity",
+    "@odata.id": "/redfish/v1/Nodes/Node1",
+    "@odata.type": "#ComposedNode.1.1.0.ComposedNode",
+    "Id": "Node1",
+    "Name": "Composed Node",
+    "Description": "Node #1",
+    "UUID": "fa39d108-7d70-400a-9db2-6940375c31c2",
+    "PowerState": "On",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK",
+        "HealthRollup": "OK"
+    },
+    "Processors": {
+        "Count": 2,
+        "Model": "Multi-Core Intel(R) Xeon(R) processor 7xxx Series",
+        "Status": {
+            "State": "Enabled",
+            "Health": "OK"
+        }
+    },
+    "Memory": {
+        "TotalSystemMemoryGiB": 32,
+        "Status": {
+            "State": "Enabled",
+            "Health": "OK"
+        }
+    },
+    "ComposedNodeState": "Allocated",
+    "Boot": {
+        "BootSourceOverrideEnabled": "Disabled",
+        "BootSourceOverrideTarget": "None",
+        "BootSourceOverrideTarget@Redfish.AllowableValues": [
+            "None",
+            "Pxe",
+            "Hdd",
+            "RemoteDrive"
+        ],
+        "BootSourceOverrideMode": "Legacy",
+        "BootSourceOverrideMode@Redfish.AllowableValues": ["Legacy",
+          "UEFI"]
+    },
+    "Oem": {},
+    "Links": {
+        "ComputerSystem": {
+            "@odata.id": "/redfish/v1/Systems/System1"
+        },
+        "Processors": [
+            {
+                "@odata.id": "/redfish/v1/Systems/System1/Processors/CPU1"
+            }
+        ],
+        "Memory": [
+            {
+                "@odata.id": "/redfish/v1/Systems/System1/Memory/Dimm1"
+            }
+        ],
+        "EthernetInterfaces": [
+            {
+                "@odata.id":
+                    "/redfish/v1/Systems/System1/EthernetInterfaces/LAN1"
+            }
+        ],
+        "LocalDrives": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/Blade1/Drives/1"
+            }
+        ],
+        "RemoteDrives": [
+            {
+                "@odata.id": "/redfish/v1/Services/RSS1/Targets/target1"
+            }
+        ],
+        "ManagedBy": [
+            {
+                "@odata.id": "/redfish/v1/Managers/PODM"
+            }
+        ],
+        "Oem": {}
+    },
+    "Actions": {
+        "#ComposedNode.Reset": {
+            "target": "/redfish/v1/Nodes/Node1/Actions/ComposedNode.Reset",
+            "ResetType@Redfish.AllowableValues": [
+                "On",
+                "ForceOff",
+                "GracefulRestart",
+                "ForceRestart",
+                "Nmi",
+                "ForceOn",
+                "PushPowerButton",
+                "GracefulShutdown"
+            ]
+        },
+        "#ComposedNode.Assemble": {
+            "target": "/redfish/v1/Nodes/Node1/Actions/ComposedNode.Assemble"
+        },
+        "#ComposedNode.AttachEndpoint": {
+            "target":
+                "/redfish/v1/Nodes/Node1/Actions/ComposedNode.AttachEndpoint",
+            "Resource@Redfish.AllowableValues": [
+                {"@odata.id":"/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.1"},
+                {"@odata.id":"/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.2"}
+            ]
+        },
+        "#ComposedNode.DetachEndpoint": {
+            "target":
+                "/redfish/v1/Nodes/Node1/Actions/ComposedNode.DetachEndpoint",
+            "Resource@Redfish.AllowableValues": [
+                {"@odata.id":"/redfish/v1/Chassis/PCIeSwitchChassis/Drives/Disk.Bay.3"}
+            ]
+        }
+    }
+}
