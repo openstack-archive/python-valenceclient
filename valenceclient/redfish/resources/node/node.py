@@ -115,6 +115,14 @@ class Node(base.ResourceBase):
                                                 resource=self._path)
         return reset_action
 
+    def _get_assemble_action_element(self):
+        assemble_action = self._actions.assemble
+        if not assemble_action:
+            raise exceptions.MissingActionError(
+                action='#ComposedNode.Assemble',
+                resource=self._path)
+        return assemble_action
+
     def get_allowed_reset_node_values(self):
         """Get the allowed values for resetting the node.
 
@@ -147,6 +155,12 @@ class Node(base.ResourceBase):
         target_uri = self._get_reset_action_element().target_uri
 
         self._conn.post(target_uri, data={'ResetType': value})
+
+    def assemble_node(self):
+        """Assemble the composed node."""
+        target_uri = self._get_assemble_action_element().target_uri
+
+        self._conn.post(target_uri)
 
     def get_allowed_node_boot_source_values(self):
         """Get the allowed values for changing the boot source.
