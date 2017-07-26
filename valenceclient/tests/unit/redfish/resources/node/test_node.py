@@ -319,6 +319,10 @@ class NodeTestCase(testtools.TestCase):
                       self.node_inst.processors.summary)
         self.conn.get.return_value.json.assert_not_called()
 
+    def test_delete_node(self):
+        self.node_inst.delete_node()
+        self.node_inst._conn.delete.assert_called_once()
+
 
 class NodeCollectionTestCase(testtools.TestCase):
 
@@ -353,3 +357,13 @@ class NodeCollectionTestCase(testtools.TestCase):
             redfish_version=self.node_col.redfish_version)
         self.assertIsInstance(members, list)
         self.assertEqual(1, len(members))
+
+    def test__get_compose_action_element(self):
+        value = self.node_col._get_compose_action_element()
+        self.assertEqual("/redfish/v1/Nodes/Actions/Allocate",
+                         value.target_uri)
+
+    def test_compose_node_no_properties(self):
+        self.node_col.compose_node()
+        self.node_col._conn.post.assert_called_once_with(
+            '/redfish/v1/Nodes/Actions/Allocate', data={})
