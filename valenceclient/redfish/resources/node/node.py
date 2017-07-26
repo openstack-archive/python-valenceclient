@@ -27,13 +27,18 @@ from valenceclient.redfish.resources.node import mappings as node_maps
 LOG = logging.getLogger(__name__)
 
 
-class ActionsField(base.CompositeField):
+class NodeActionsField(base.CompositeField):
     reset = common.ResetActionField('#ComposedNode.Reset')
     assemble = common.AssembleActionField('#ComposedNode.Assemble')
     attach_endpoint = common.AttachEndpointActionField(
         '#ComposedNode.AttachEndpoint')
     detach_endpoint = common.DetachEndpointActionField(
         '#ComposedNode.DetachEndpoint')
+
+
+class NodeCollectionActionsField(base.CompositeField):
+    compose = common.ComposeNodeActionField(
+        '#ComposedNodeCollection.Allocate')
 
 
 class BootField(base.CompositeField):
@@ -96,7 +101,7 @@ class Node(base.ResourceBase):
 
     _processors = None  # ref to ProcessorCollection instance
 
-    _actions = ActionsField('Actions', required=True)
+    _actions = NodeActionsField('Actions', required=True)
 
     def __init__(self, connector, identity, redfish_version=None):
         """A class representing a ComposedNode
@@ -232,12 +237,24 @@ class Node(base.ResourceBase):
 
         return self._processors
 
+    def delete_node(self):
+        """Delete (disassemble) the node.
+
+        When this action is called several actions are performed. A graceful
+        shutdown is sent to the computer system, all VLANs except reserved ones
+        are removed its associated ethernet switch ports, the computer system
+        is deallocated and the remote target is deallocated.
+        """
+        self._conn.delete(self.path)
+
     def refresh(self):
         super(Node, self).refresh()
         self._processors = None
 
 
 class NodeCollection(base.ResourceCollectionBase):
+
+    _actions = NodeCollectionActionsField('Actions', required=True)
 
     @property
     def _resource_type(self):
@@ -253,3 +270,20 @@ class NodeCollection(base.ResourceCollectionBase):
         """
         super(NodeCollection, self).__init__(connector, path,
                                              redfish_version)
+
+    def _get_compose_action_element(self):
+        compose_action = self._actions.compose
+        if not compose_action:
+            raise exceptions.MissingActionError(
+                action='#ComposedNodeCollection.Allocate',
+                resource=self._path)
+        return compose_action
+
+    def compose_node(self, properties={}):
+        """Compose a node from RackScale hardware
+
+        :param properties: The properties requested for node composition
+        :returns: The Node object
+        """
+        target_uri = self._get_compose_action_element().target_uri
+        self._conn.post(target_uri, data=properties)

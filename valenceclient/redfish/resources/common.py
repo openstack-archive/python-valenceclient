@@ -36,3 +36,7 @@ class DetachEndpointActionField(base.CompositeField):
                                 adapter=list)
 
     target_uri = base.Field('target', required=True)
+
+
+class ComposeNodeActionField(base.CompositeField):
+    target_uri = base.Field('target', required=True)
