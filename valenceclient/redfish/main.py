@@ -17,12 +17,14 @@ import sushy
 from sushy.resources import base
 
 from valenceclient.redfish.resources.node import node
-
+from valenceclient.redfish.resources.storage import storage
 
 class ValenceSushy(sushy.Sushy):
 
     _nodes_path = base.Field(['Nodes', '@odata.id'], required=True)
     """NodeCollection path"""
+
+    _storage_path = base.Field(['Services', '@odata.id'], required=True)
 
     def get_node_collection(self):
         """Get the NodeCollection object
@@ -42,3 +44,11 @@ class ValenceSushy(sushy.Sushy):
         """
         return node.Node(self._conn, identity,
                          redfish_version=self.redfish_version)
+
+    def get_storage_service_collection(self):
+        return storage.StorageServiceCollection(self._conn, self._storage_path,
+                                                redfish_version=self.redfish_version)
+
+    def get_storage_service(self, identity):
+        return storage.StorageService(self._conn, identify,
+                                      redfish_version=self.redfish_version)
