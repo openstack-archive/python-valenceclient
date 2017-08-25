@@ -114,12 +114,12 @@ class HttpClientTest(utils.BaseTestCase):
 
         client.json_request('GET', 'redfish/v1')
 
-    def test_server_http_not_valide_request(self):
+    def test_server_http_not_valid_request(self):
         kwargs = {"valence_url": "http://localhost/"}
         client = http.HTTPClient(**kwargs)
         client.session.request = mock.Mock(
             side_effect=http.requests.exceptions.InvalidSchema)
-        self.assertRaises(exc.ValidationError, client._http_request, 'GET',
+        self.assertRaises(exc.ValidationError, client.json_request, 'GET',
                           'http://localhost/')
 
     @mock.patch.object(http.LOG, 'debug', autospec=True)
@@ -149,7 +149,7 @@ class HttpClientTest(utils.BaseTestCase):
         with mock.patch.object(client, 'session',
                                autospec=True) as mock_session:
             mock_session.request.side_effect = iter([resp])
-            response, body_iter = client._http_request('/redfish/v1/Nodes',
-                                                       'GET')
+            response, body_iter = client.json_request('GET',
+                                                      '/redfish/v1/Nodes')
 
         self.assertEqual(http_client.OK, response.status_code)
