@@ -40,7 +40,8 @@ def make_client(instance):
     client = valence_client(
         valence_api_version=instance._cli_options.valence_api_version,
         valence_url=instance._cli_options.valence_api_url,
-        auth_type=instance._cli_options.valence_auth_type)
+        auth_type=instance._cli_options.valence_auth_type,
+        auth_required=False)
     return client
 
 
