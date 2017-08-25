@@ -52,13 +52,10 @@ def _extract_error_json(body):
     error_json = {}
     try:
         body_json = jsonutils.loads(body)
-        if 'error_message' in body_json:
-            raw_msg = body_json['error_message']
-            error_json = jsonutils.loads(raw_msg)
+        return body_json
+
     except ValueError:
         pass
-
-    return error_json
 
 
 def with_retries(func):
@@ -125,23 +122,24 @@ class HTTPClient(object):
     def _make_connection_url(self, url):
         return urlparse.urljoin(self.valence_url, url)
 
-    def _http_request(self, url, method, **kwargs):
+    def _http_request(self, conn_url, method, **kwargs):
         """Send an http request with the specified characteristics
 
         Wrapper around request.Session.request to handle tasks such as
         setting headers and error handling.
         """
-
-        kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
+        kwargs['headers'] = kwargs.get('headers', {})
         kwargs['headers'].setdefault('User-agent', USER_AGENT)
 
-        self.log_curl_request(method, url, kwargs)
+        self.log_curl_request(method, conn_url, kwargs)
+
         body = kwargs.pop('body', None)
-        if body:
-            kwargs['data'] = body
-        conn_url = self._make_connection_url(url)
+        headers = kwargs.pop('headers')
+
+        conn_url = self._make_connection_url(conn_url)
         try:
-            resp = self.session.request(method, conn_url, **kwargs)
+            resp = self.session.request(method, conn_url, headers=headers,
+                                        data=body, json=kwargs)
         except requests.exceptions.RequestException as e:
             msg = (_("Error has occured while handling request for "
                      "%(url)s: %(e)s") % dict(url=conn_url, e=e))
@@ -151,7 +149,6 @@ class HTTPClient(object):
 
         self.log_http_response(resp, resp.text)
         body_iter = six.StringIO(resp.text)
-
         if resp.status_code >= http_client.BAD_REQUEST:
             error_json = _extract_error_json(resp.text)
             raise exc.from_response(resp, error_json.get('faultstring'),
@@ -162,14 +159,15 @@ class HTTPClient(object):
 
         return resp, body_iter
 
-    def json_request(self, method, url, **kwargs):
+    def json_request(self, method, conn_url, **kwargs):
         kwargs.setdefault('headers', {})
         kwargs['headers'].setdefault('Content-Type', 'application/json')
         kwargs['headers'].setdefault('Accept', 'application/json')
+        body = None
         if 'body' in kwargs:
             kwargs['body'] = jsonutils.dump_as_bytes(kwargs['body'])
 
-        resp, body_iter = self._http_request(url, method, **kwargs)
+        resp, body_iter = self._http_request(conn_url, method, **kwargs)
         content_type = resp.headers.get('Content-Type')
         if(resp.status_code in (http_client.NO_CONTENT,
                                 http_client.RESET_CONTENT)
