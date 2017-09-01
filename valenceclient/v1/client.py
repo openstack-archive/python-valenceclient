@@ -25,6 +25,9 @@ class Client(object):
     node_path = "/v1/nodes/%s"
     node_manage_path = "/v1/nodes/manage"
 
+    systems = "v1/systems"
+    system_path = "v1/systems/%s"
+
     def __init__(self, **kwargs):
         self.http_client = http.HTTPClient(**kwargs)
 
@@ -69,5 +72,16 @@ class Client(object):
     def manage_node(self, request):
         resp, body = self.http_client.json_request('post',
                                                    self.node_manage_path,
+                                                   **request)
+        return body
+
+    def list_systems(self, request):
+        resp, body = self.http_client.json_request('get', self.systems,
+                                                   **request)
+        return body
+
+    def list_system_by_id(self, id, request):
+        resp, body = self.http_client.json_request('get',
+                                                   self.system_path % id,
                                                    **request)
         return body
