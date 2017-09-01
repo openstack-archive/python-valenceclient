@@ -21,6 +21,10 @@ class Client(object):
     podmanagers = "/v1/pod_managers"
     podmanager_path = "/v1/pod_managers/%s"
 
+    nodes = "/v1/nodes"
+    node_path = "/v1/nodes/%s"
+    node_manage_path = "/v1/nodes/manage"
+
     def __init__(self, **kwargs):
         self.http_client = http.HTTPClient(**kwargs)
 
@@ -41,4 +45,29 @@ class Client(object):
     def show_podmanager(self, id):
         resp, body = self.http_client.json_request('get',
                                                    self.podmanager_path % id)
+        return body
+
+    def list_nodes(self):
+        resp, body = self.http_client.json_request('get', self.nodes)
+        return body
+
+    def compose_node(self, request):
+        resp, body = self.http_client.json_request('post', self.nodes,
+                                                   **request)
+        return body
+
+    def show_node(self, id):
+        resp, body = self.http_client.json_request('get',
+                                                   self.node_path % id)
+        return body
+
+    def delete_node(self, id):
+        resp, body = self.http_client.json_request('delete',
+                                                   self.node_path % id)
+        return body
+
+    def manage_node(self, request):
+        resp, body = self.http_client.json_request('post',
+                                                   self.node_manage_path,
+                                                   **request)
         return body
