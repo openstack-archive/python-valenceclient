@@ -28,6 +28,9 @@ class Client(object):
     systems = "v1/systems"
     system_path = "v1/systems/%s"
 
+    flavors = "v1/flavors"
+    flavor_path = "v1/flavors/%s"
+
     def __init__(self, **kwargs):
         self.http_client = http.HTTPClient(**kwargs)
 
@@ -83,5 +86,30 @@ class Client(object):
     def list_system_by_id(self, id, request):
         resp, body = self.http_client.json_request('get',
                                                    self.system_path % id,
+                                                   **request)
+        return body
+
+    def list_flavors(self):
+        resp, body = self.http_client.json_request('get', self.flavors)
+        return body
+
+    def create_flavor(self, request):
+        resp, body = self.http_client.json_request('post', self.flavors,
+                                                   **request)
+        return body
+
+    def list_flavor_by_id(self, id):
+        resp, body = self.http_client.json_request('get',
+                                                   self.flavor_path % id)
+        return body
+
+    def delete_flavor(self, id):
+        resp, body = self.http_client.json_request('delete',
+                                                   self.flavor_path % id)
+        return body
+
+    def update_flavor(self, id, request):
+        resp, body = self.http_client.json_request('patch',
+                                                   self.flavor_path % id,
                                                    **request)
         return body
