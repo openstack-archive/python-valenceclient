@@ -53,6 +53,12 @@ class Client(object):
                                                    self.podmanager_path % id)
         return body
 
+    def update_podmanager(self, id, request):
+        resp, body = self.http_client.json_request('patch',
+                                                   self.podmanager_path % id,
+                                                   **request)
+        return body
+
     def list_nodes(self):
         resp, body = self.http_client.json_request('get', self.nodes)
         return body

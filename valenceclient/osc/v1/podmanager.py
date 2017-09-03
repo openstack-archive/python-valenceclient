@@ -138,3 +138,53 @@ class ShowPodManager(command.ShowOne):
         columns = ('uuid', 'name', 'url', 'driver', 'status', 'created_at',
                    'updated_at')
         return (columns, (utils.get_dict_properties(obj, columns)))
+
+
+class UpdatePodManager(command.ShowOne):
+    _description = "Update podmanager"
+    auth_required = False
+
+    def get_parser(self, prog_name):
+        parser = super(UpdatePodManager, self).get_parser(prog_name)
+        parser.add_argument(
+            'id',
+            metavar='<id>',
+            help=('Podmanager id'))
+        parser.add_argument(
+            '--name',
+            metavar='<name>',
+            help=('Name for the PodManager'))
+        parser.add_argument(
+            '--driver',
+            metavar='<driver>',
+            help=("PodManager driver"))
+        parser.add_argument(
+            '--auth',
+            metavar='<key=value>',
+            action=parseractions.KeyValueAction,
+            help=("auth information to connect to podmanager, repeat option "
+                  "to set each key. Accepted keys are type, username, password"
+                  "If type not specified 'basic' is taken by default"))
+        return parser
+
+    def take_action(self, parsed_args):
+        self.log.debug("take_action(%s)", parsed_args)
+        req = {}
+        if parsed_args.name:
+            req['name'] = parsed_args.name
+        if parsed_args.driver:
+            req['driver'] = parsed_args.driver
+        if parsed_args.auth:
+            auth = parsed_args.auth
+            auth['type'] = auth.get('type', 'basic')
+            req['authentication'] = [{'type': auth['type'],
+                                      'auth_items': {
+                                          'username': auth['username'],
+                                          'password': auth['password']}}]
+
+        id = parsed_args.id
+        client = self.app.client_manager.valence
+        obj = client.update_podmanager(id, req)
+        columns = ('uuid', 'name', 'url', 'driver', 'status', 'created_at',
+                   'updated_at')
+        return (columns, (utils.get_dict_properties(obj, columns)))
