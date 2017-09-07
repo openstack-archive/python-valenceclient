@@ -14,15 +14,11 @@
 #    under the License.
 
 from valenceclient.common.apiclient import exceptions
-from valenceclient.common.apiclient.exceptions import BadRequest
-from valenceclient.common.apiclient.exceptions import ClientException
-from valenceclient.common.apiclient.exceptions import InternalServerError
-from valenceclient.common.apiclient.exceptions import ValidationError
 
-BadRequest = BadRequest
-ClientException = ClientException
-InternalServerError = InternalServerError
-ValidationError = ValidationError
+BadRequest = exceptions.BadRequest
+ClientException = exceptions.ClientException
+InternalServerError = exceptions.InternalServerError
+ValidationError = exceptions.ValidationError
 
 
 class InvalidValenceUrl(ClientException):
@@ -45,15 +41,10 @@ class ConnectionRefuse(ClientException):
     pass
 
 
-def from_response(response, message=None, traceback=None, method=None,
-                  url=None):
+def from_response(response, error=None, method=None, url=None):
     """Return an HttpError instance based on response from httplib/requests"""
-
     error_body = {}
-    if message:
-        error_body['message'] = message
-    if traceback:
-        error_body['traceback'] = traceback
+    error_body['message'] = error['detail']
 
     if hasattr(response, 'status') and not hasattr(response, 'status_code'):
         response.status_code = response.status
