@@ -26,18 +26,19 @@ class ExcTest(test_utils.BaseTestCase):
 
     def setUp(self):
         super(ExcTest, self).setUp()
-        self.message = 'SpongeBob SquarePants'
-        self.traceback = 'Foo Traceback'
+        self.error = {'code': 'Bad Request',
+                      'status': '400',
+                      'detail': 'unsupported parameters',
+                      'title': 'BadRequest'}
+
         self.method = 'call_spongebob'
         self.url = 'http://foo.bar'
-        self.expected_json = {'error': {'message': self.message,
-                                        'traceback': self.traceback}}
+        self.expected_json = {'error': {'message': 'unsupported parameters'}}
 
     def test_from_response(self, mock_apiclient):
         fake_response = mock.Mock(status_code=http_client.BAD_REQUEST)
-        exc.from_response(fake_response, message=self.message,
-                          traceback=self.traceback, method=self.method,
-                          url=self.url)
+        exc.from_response(fake_response, error=self.error,
+                          method=self.method, url=self.url)
         self.assertEqual(http_client.BAD_REQUEST, fake_response.status_code)
         self.assertEqual(self.expected_json, fake_response.json())
         mock_apiclient.assert_called_once_with(
@@ -48,8 +49,7 @@ class ExcTest(test_utils.BaseTestCase):
         fake_response.getheader.return_value = 'fake-header'
         delattr(fake_response, 'status_code')
 
-        exc.from_response(fake_response, message=self.message,
-                          traceback=self.traceback, method=self.method,
+        exc.from_response(fake_response, error=self.error, method=self.method,
                           url=self.url)
         expected_header = {'Content-Type': 'fake-header'}
         self.assertEqual(expected_header, fake_response.headers)
