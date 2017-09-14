@@ -1,0 +1,9 @@
+Code-Review+2: Nate Potter <nathaniel.potter@intel.com>
+Code-Review+1: Akhil jain <akhil.jain@nectechnologies.in>
+Workflow+1: Nate Potter <nathaniel.potter@intel.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Thu, 14 Sep 2017 18:12:50 +0000
+Reviewed-on: https://review.openstack.org/497812
+Project: openstack/python-valenceclient
+Branch: refs/heads/master
