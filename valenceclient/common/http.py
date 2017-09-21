@@ -48,16 +48,7 @@ def _trim_endpoint_api_version(url):
 
 
 def _extract_error_json(body):
-    error_json = {}
-    try:
-        body_json = jsonutils.loads(body)
-        if 'error_message' in body_json:
-            raw_msg = body_json['error_message']
-            error_json = jsonutils.loads(raw_msg)
-    except ValueError:
-        pass
-
-    return error_json
+    return jsonutils.loads(body)
 
 
 def with_retries(func):
@@ -153,9 +144,7 @@ class HTTPClient(object):
         body_iter = six.StringIO(resp.text)
         if resp.status_code >= http_client.BAD_REQUEST:
             error_json = _extract_error_json(resp.text)
-            raise exc.from_response(resp, error_json.get('faultstring'),
-                                    error_json.get('debugfino'), method,
-                                    conn_url)
+            raise exc.from_response(resp, error_json, method, conn_url)
         elif resp.status_code in (http_client.FOUND,
                                   http_client.USE_PROXY):
             return self._http_request(resp['location'], method, **kwargs)

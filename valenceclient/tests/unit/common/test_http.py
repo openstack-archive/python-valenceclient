@@ -27,17 +27,13 @@ DEFAULT_HOST = 'localhost'
 DEFAULT_POST = '1234'
 
 
-def _get_error_body(faultstring=None, debuginfo=None, description=None):
-    if description:
-        error_body = {'description': description}
-    else:
-        error_body = {
-            'faultstring': faultstring,
-            'debuginfo': debuginfo
-            }
-    raw_error_body = jsonutils.dump_as_bytes(error_body)
-    body = {'error_message': raw_error_body}
-    return jsonutils.dumps(body)
+def _get_error_body(detail=None):
+    error = {'code': 'Bad Request',
+             'status': '400',
+             'detail': detail or 'unsupported params',
+             'title': 'BadRequest'}
+
+    return jsonutils.dumps(error)
 
 
 class HttpClientTest(utils.BaseTestCase):
@@ -76,6 +72,7 @@ class HttpClientTest(utils.BaseTestCase):
 
     def test_server_exception_msg_only(self):
         error_body = "test error msg"
+        error_body = _get_error_body(detail=error_body)
         kwargs = {"valence_url": "http://localhost"}
         client = http.HTTPClient(**kwargs)
         client.session = utils.mockSession(
@@ -90,7 +87,7 @@ class HttpClientTest(utils.BaseTestCase):
 
     def test_server_exception_description_only(self):
         error_msg = "test error msg"
-        error_body = _get_error_body(description=error_msg)
+        error_body = _get_error_body(detail=error_msg)
         kwargs = {"valence_url": "http://localhost/"}
         client = http.HTTPClient(**kwargs)
         client.session = utils.mockSession(
