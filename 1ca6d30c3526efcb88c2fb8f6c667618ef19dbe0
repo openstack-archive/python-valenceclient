@@ -1,0 +1,8 @@
+Code-Review+2: Anusha Ramineni <anusha.ramineni@nectechnologies.in>
+Workflow+1: Anusha Ramineni <anusha.ramineni@nectechnologies.in>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Tue, 05 Dec 2017 06:27:53 +0000
+Reviewed-on: https://review.openstack.org/519176
+Project: openstack/python-valenceclient
+Branch: refs/heads/master
