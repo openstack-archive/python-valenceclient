@@ -14,31 +14,11 @@
 #
 
 from valenceclient.common import http
+from valenceclient.v1 import podmanager
 
 
 class Client(object):
 
-    podmanagers = "/v1/pod_managers"
-    podmanager_path = "/v1/pod_managers/%s"
-
     def __init__(self, **kwargs):
         self.http_client = http.HTTPClient(**kwargs)
-
-    def list_podmanagers(self):
-        resp, body = self.http_client.json_request('get', self.podmanagers)
-        return body
-
-    def create_podmanager(self, request):
-        resp, body = self.http_client.json_request('post', self.podmanagers,
-                                                   **request)
-        return body
-
-    def delete_podmanager(self, id):
-        resp, body = self.http_client.json_request('delete',
-                                                   self.podmanager_path % id)
-        return body
-
-    def show_podmanager(self, id):
-        resp, body = self.http_client.json_request('get',
-                                                   self.podmanager_path % id)
-        return body
+        self.podmanagers = podmanager.PodManagersClient(self.http_client)

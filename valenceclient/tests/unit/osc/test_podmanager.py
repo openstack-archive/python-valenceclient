@@ -16,6 +16,7 @@ import mock
 
 from valenceclient.osc.v1 import podmanager
 from valenceclient.tests.unit.osc import test_base
+from valenceclient.v1 import podmanager as pod
 
 
 class TestCreatePodmanager(test_base.TestValenceClient):
@@ -37,9 +38,9 @@ class TestCreatePodmanager(test_base.TestValenceClient):
             ('auth', {'username': 'user', 'password': 'pass'}),
 
         ]
-
-        mocker = mock.Mock(return_value=response)
-        self.valenceclient.create_podmanager = mocker
+        resp = pod.PodManager(self, response)
+        mocker = mock.Mock(return_value=resp)
+        self.valenceclient.podmanagers.create_podmanager = mocker
         cmd = podmanager.CreatePodManager(self.app, self.namespace)
         parsed_args = self.check_parser(cmd, arglist, verifylist)
         result = list(cmd.take_action(parsed_args))
@@ -51,8 +52,8 @@ class TestCreatePodmanager(test_base.TestValenceClient):
         self.assertEqual(filtered, result)
 
 
-class TestShowPolicy(test_base.TestValenceClient):
-    def test_show_policy(self):
+class TestShowPodmanager(test_base.TestValenceClient):
+    def test_show_podmanager(self):
         podmanager_id = "test-id"
         arglist = [podmanager_id]
         verifylist = [
@@ -65,9 +66,10 @@ class TestShowPolicy(test_base.TestValenceClient):
                     "status": "Offline",
                     "created_at": "2017-08-07 06:56:34 UTC",
                     "updated_at": "2017-08-28 06:56:34 UTC"}
+        resp = pod.PodManager(self, response)
 
-        mocker = mock.Mock(return_value=response)
-        self.valenceclient.show_podmanager = mocker
+        mocker = mock.Mock(return_value=resp)
+        self.valenceclient.podmanagers.show_podmanager = mocker
         cmd = podmanager.ShowPodManager(self.app, self.namespace)
         parsed_args = self.check_parser(cmd, arglist, verifylist)
         result = list(cmd.take_action(parsed_args))
@@ -84,9 +86,70 @@ class TestDeletePodmanager(test_base.TestValenceClient):
         arglist = ['test-id']
         verifylist = [('id', ['test-id']), ]
         mocker = mock.Mock(return_value=None)
-        self.valenceclient.delete_podmanager = mocker
+        self.valenceclient.podmanagers.delete_podmanager = mocker
         cmd = podmanager.DeletePodManagers(self.app, self.namespace)
         parsed_args = self.check_parser(cmd, arglist, verifylist)
         result = cmd.take_action(parsed_args)
         mocker.assert_called_with('test-id')
         self.assertIsNone(result)
+
+
+class TestUpdatePodmanager(test_base.TestValenceClient):
+    def test_update_podmanager(self):
+        arglist = ['test_uuid', '--name', 'updatedName']
+        verifylist = [('id', 'test_uuid'),
+                      ('name', 'updatedName')]
+        response = {"uuid": "test-uuid",
+                    "name": "updatedName",
+                    "url": "http://localhost",
+                    "driver": "redfishv1",
+                    "status": "Offline",
+                    "created_at": "2017-08-07 06:56:34 UTC",
+                    "updated_at": "2017-08-28 06:56:34 UTC"}
+        resp = pod.PodManager(self, response)
+        mocker = mock.Mock(return_value=resp)
+        self.valenceclient.podmanagers.update_podmanager = mocker
+        cmd = podmanager.UpdatePodManager(self.app, self.namespace)
+        parsed_args = self.check_parser(cmd, arglist, verifylist)
+        result = cmd.take_action(parsed_args)
+        filtered = ('uuid', 'name', 'url', 'driver', 'status', 'created_at',
+                    'updated_at'),\
+                   ('test-uuid', 'updatedName', 'http://localhost',
+                    'redfishv1', 'Offline', '2017-08-07 06:56:34 UTC',
+                    '2017-08-28 06:56:34 UTC')
+        self.assertEqual(filtered, result)
+
+
+class TestListPodmanager(test_base.TestValenceClient):
+    def test_list_podmanager(self):
+        response = [{"uuid": "test-id",
+                     "name": "test-podm",
+                     "url": "http://localhost",
+                     "driver": "redfishv1",
+                     "status": "Offline",
+                     "created_at": "2017-08-07 06:56:34 UTC",
+                     "updated_at": "2017-08-28 06:56:34 UTC"},
+                    {"uuid": "test-id2",
+                     "name": "test-podm2",
+                     "url": "http://localhost2",
+                     "driver": "redfishv12",
+                     "status": "Offline",
+                     "created_at": "2017-08-07 06:56:32 UTC",
+                     "updated_at": "2017-08-28 06:56:32 UTC"}
+                    ]
+        resp = [pod.PodManager(self, res) for res in response]
+        mocker = mock.Mock(return_value=resp)
+        self.valenceclient.podmanagers.list_podmanagers = mocker
+        cmd = podmanager.ListPodManagers(self.app, self.namespace)
+        result = cmd.take_action(parsed_args=None)
+        result_list = [result[0], list(result[1])]
+        filtered = [('uuid', 'name', 'url', 'driver', 'status', 'created_at',
+                     'updated_at'),
+                    [('test-id', 'test-podm', 'http://localhost', 'redfishv1',
+                      'Offline', '2017-08-07 06:56:34 UTC',
+                      '2017-08-28 06:56:34 UTC'),
+                     ('test-id2', 'test-podm2', 'http://localhost2',
+                      'redfishv12', 'Offline', '2017-08-07 06:56:32 UTC',
+                      '2017-08-28 06:56:32 UTC')]
+                    ]
+        self.assertEqual(filtered, result_list)
