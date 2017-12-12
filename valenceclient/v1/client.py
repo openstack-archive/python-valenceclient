@@ -14,11 +14,12 @@
 #
 
 from valenceclient.common import http
+from valenceclient.v1 import node_client
 from valenceclient.v1 import podmanager
 
 
 class Client(object):
-
     def __init__(self, **kwargs):
         self.http_client = http.HTTPClient(**kwargs)
         self.podmanagers = podmanager.PodManagersClient(self.http_client)
+        self.nodes = node_client.NodeClient(self.http_client)

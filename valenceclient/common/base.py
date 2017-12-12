@@ -121,6 +121,18 @@ class Manager(object):
         """
         self.api.json_request('DELETE', self._path(resource_id))
 
+    def _manage(self, path, **request):
+        """Manage a resource
+
+        :param path: api path to manage resource
+        :param request: A dictionary containing attributes to manage resource
+        :return: A managed resource
+        """
+        url = self._path() + path
+        resp, body = self.api.json_request('POST', url, **request)
+        if body:
+            return self.resource_class(self, body)
+
 
 @six.add_metaclass(abc.ABCMeta)
 class CreateManager(Manager):
