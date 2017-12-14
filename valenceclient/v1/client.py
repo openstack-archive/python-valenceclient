@@ -17,6 +17,7 @@ from valenceclient.common import http
 from valenceclient.v1 import flavor_client
 from valenceclient.v1 import node_client
 from valenceclient.v1 import podmanager
+from valenceclient.v1 import system_client
 
 
 class Client(object):
@@ -25,3 +26,4 @@ class Client(object):
         self.podmanagers = podmanager.PodManagersClient(self.http_client)
         self.nodes = node_client.NodeClient(self.http_client)
         self.flavors = flavor_client.FlavorClient(self.http_client)
+        self.systems = system_client.SystemClient(self.http_client)

@@ -60,7 +60,7 @@ class Manager(object):
     def _resource_name(self):
         """The resource name"""
 
-    def _get(self, resource_id, fields=None):
+    def _get(self, resource_id, fields=None, **kwargs):
         """Retrieve a resource.
 
         :param resource_id: Identifier of the resource.
@@ -72,7 +72,7 @@ class Manager(object):
             resource_id += ','.join(fields)
 
         try:
-            return self._list(self._path(resource_id))[0]
+            return self._list(self._path(resource_id), **kwargs)[0]
         except ValueError:
             return None
 
@@ -90,8 +90,8 @@ class Manager(object):
         else:
             return {}
 
-    def _list(self, url, obj_class=None,):
-        resp, body = self.api.json_request('GET', url)
+    def _list(self, url, obj_class=None, **kwargs):
+        resp, body = self.api.json_request('GET', url, **kwargs)
         if obj_class is None:
             obj_class = self.resource_class
 
