@@ -30,10 +30,7 @@ def getid(obj):
     Abstracts the common pattern of allowing both an object or an
     object's ID (UUID) as a parameter when dealing with relationships.
     """
-    try:
-        return obj.id
-    except AttributeError:
-        return obj
+    return getattr(obj, 'id', obj)
 
 
 @six.add_metaclass(abc.ABCMeta)
