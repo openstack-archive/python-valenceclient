@@ -1,0 +1,11 @@
+Code-Review+2: Akhil jain <akhil.jain@india.nec.com>
+Code-Review+1: caoyuan <cao.yuan@99cloud.net>
+Code-Review+1: jacky06 <zhang.min@99cloud.net>
+Code-Review+1: zhulingjie <easyzlj@gmail.com>
+Workflow+1: Akhil jain <akhil.jain@india.nec.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Mon, 12 Nov 2018 09:43:39 +0000
+Reviewed-on: https://review.openstack.org/611023
+Project: openstack/python-valenceclient
+Branch: refs/heads/master
