@@ -161,8 +161,8 @@ class HTTPClient(object):
         resp, body_iter = self._http_request(conn_url, method, **kwargs)
         content_type = resp.headers.get('Content-Type')
         if(resp.status_code in (http_client.NO_CONTENT,
-                                http_client.RESET_CONTENT)
-            or content_type is None):
+                                http_client.RESET_CONTENT) or
+            content_type is None):
             return resp, list()
 
         if 'application/json' in content_type:
